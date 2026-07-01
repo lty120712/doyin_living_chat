@@ -1,9 +1,38 @@
 <script setup>
+import { ref } from 'vue'
 import { state, parseNum } from '../../store/liveStore.js'
+import VideoControls from './VideoControls.vue'
+
+const hostFileInput = ref(null)
 
 function updateStats() {
   state.likeCount = parseNum(state._likeInit || '3.2万')
   state.commentCount = parseNum(state._commentInit || '892')
+}
+
+function openHostFile() {
+  hostFileInput.value?.click()
+}
+
+function editHostMedia() {
+  if (!state.hostMedia) return
+  state.mediaEditorTarget = 'host'
+  state.mediaEditorIndex = -1
+  state.mediaEditorVisible = true
+}
+
+function handleHostFile(e) {
+  const file = e.target.files[0]
+  if (!file) return
+  const url = URL.createObjectURL(file)
+  const type = file.type.startsWith('video/') ? 'video' : 'image'
+  state.hostMedia = { type, url, name: file.name }
+  e.target.value = ''
+}
+
+function clearHostMedia() {
+  if (state.hostMedia?.url) URL.revokeObjectURL(state.hostMedia.url)
+  state.hostMedia = null
 }
 </script>
 
@@ -15,6 +44,18 @@ function updateStats() {
       </a-form-item>
       <a-form-item label="主播名称">
         <a-input v-model="state.hostName" />
+      </a-form-item>
+      <a-form-item label="主播画面">
+        <div style="width:100%;display:flex;flex-direction:column;gap:4px">
+          <div class="mediaRow">
+            <a-button size="small" @click="openHostFile">选择文件</a-button>
+            <a-button v-if="state.hostMedia" size="small" @click="editHostMedia">编辑</a-button>
+            <a-button v-if="state.hostMedia" size="small" status="danger" @click="clearHostMedia">清除</a-button>
+          </div>
+          <span v-if="state.hostMedia" class="mediaName">{{ state.hostMedia.name }}</span>
+          <VideoControls v-if="state.hostMedia?.type === 'video'" :media="state.hostMedia" label="主播视频" />
+        </div>
+        <input ref="hostFileInput" type="file" accept="image/*,video/*" style="display:none" @change="handleHostFile" />
       </a-form-item>
       <a-form-item label="字幕文字">
         <a-input v-model="state.subtitle" />
@@ -57,5 +98,18 @@ function updateStats() {
 .section-card :deep(.arco-form-item-label) {
   color: #888;
   font-size: 12px;
+}
+.mediaRow {
+  display: flex;
+  gap: 6px;
+}
+.mediaName {
+  font-size: 11px;
+  color: #888;
+  margin-top: 3px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

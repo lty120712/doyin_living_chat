@@ -14,6 +14,7 @@ import GiftOverlay from './GiftOverlay.vue'
 import GiftToast from './GiftToast.vue'
 import GiftPicker from './GiftPicker.vue'
 import RankPanel from './RankPanel.vue'
+import MediaEditor from './MediaEditor.vue'
 
 const liveRef = ref(null)
 const previewRef = ref(null)
@@ -55,6 +56,7 @@ onUnmounted(() => {
         <RankPanel />
       </div>
     </div>
+    <MediaEditor />
   </div>
 </template>
 

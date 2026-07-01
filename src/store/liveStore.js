@@ -53,6 +53,10 @@ const state = reactive({
   _commentInit: '892',
   guests: [],
   guestCounter: 0,
+  hostMedia: null,
+  mediaEditorVisible: false,
+  mediaEditorTarget: null,
+  mediaEditorIndex: -1,
 
   audience: [...defaultAudience.map(a => ({ name: a.name, avatar: a.avatar, contribution: a.contribution || 0, texts: [...(a.texts || [])] }))],
   danmuAutoRunning: false,
@@ -224,7 +228,7 @@ function getGuestLayout(count) {
 
 function addGuest() {
   state.guestCounter++
-  state.guests.push({ name: '嘉宾' + state.guestCounter })
+  state.guests.push({ name: '嘉宾' + state.guestCounter, media: null })
 }
 
 function removeGuest(idx) {

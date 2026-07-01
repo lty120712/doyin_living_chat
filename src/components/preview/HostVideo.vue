@@ -26,13 +26,33 @@ function stopTimer() {
   if (timerId) { clearInterval(timerId); timerId = null }
 }
 
+function mediaStyle(m) {
+  if (!m || m.scale === undefined) return {}
+  const s = m.scale || 1
+  const ox = m.offsetX ?? 50
+  const oy = m.offsetY ?? 50
+  const cl = m.cropLeft ?? 0
+  const ct = m.cropTop ?? 0
+  const cr = m.cropRight ?? 0
+  const cb = m.cropBottom ?? 0
+  return {
+    transform: `scale(${s})`,
+    transformOrigin: `${ox}% ${oy}%`,
+    clipPath: `inset(${ct}% ${cr}% ${cb}% ${cl}%)`,
+  }
+}
+
 onMounted(() => { startTimer() })
 onUnmounted(() => { stopTimer() })
 </script>
 
 <template>
   <div class="host" :style="soloHostStyle">
-    <video autoplay muted loop src=""
+    <video v-if="state.hostMedia?.type === 'video'" :src="state.hostMedia.url" autoplay muted loop class="hostMedia"
+      :style="mediaStyle(state.hostMedia)"></video>
+    <img v-else-if="state.hostMedia?.type === 'image'" :src="state.hostMedia.url" class="hostMedia"
+      :style="mediaStyle(state.hostMedia)" />
+    <video v-else autoplay muted loop src=""
       poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='1340'%3E%3Crect fill='%2300ff00' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%2300aa00' font-size='40' text-anchor='middle' dy='.3em'%3E主播画面%3C/text%3E%3C/svg%3E">
     </video>
     <div class="viewerTag">
@@ -57,6 +77,13 @@ onUnmounted(() => { stopTimer() })
   height: 100%;
   object-fit: cover;
   background: #00ff00;
+  border-radius: 32px;
+  border: 5px solid rgba(255, 255, 255, .9);
+}
+.hostMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 32px;
   border: 5px solid rgba(255, 255, 255, .9);
 }
