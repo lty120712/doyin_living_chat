@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { state, parseNum } from '../../store/liveStore.js'
+import { state, parseNum, getHostLayout } from '../../store/liveStore.js'
 import VideoControls from './VideoControls.vue'
 
 const hostFileInput = ref(null)
@@ -16,6 +16,9 @@ function openHostFile() {
 
 function editHostMedia() {
   if (!state.hostMedia) return
+  const h = getHostLayout(state.guests.length)
+  state.mediaEditorTW = h.width
+  state.mediaEditorTH = h.height
   state.mediaEditorTarget = 'host'
   state.mediaEditorIndex = -1
   state.mediaEditorVisible = true

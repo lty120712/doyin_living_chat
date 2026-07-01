@@ -57,6 +57,8 @@ const state = reactive({
   mediaEditorVisible: false,
   mediaEditorTarget: null,
   mediaEditorIndex: -1,
+  mediaEditorTW: 620,
+  mediaEditorTH: 1340,
 
   audience: [...defaultAudience.map(a => ({ name: a.name, avatar: a.avatar, contribution: a.contribution || 0, texts: [...(a.texts || [])] }))],
   danmuAutoRunning: false,

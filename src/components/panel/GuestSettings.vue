@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { state, addGuest, removeGuest, removeAllGuests, guestColors } from '../../store/liveStore.js'
+import { state, addGuest, removeGuest, removeAllGuests, guestColors, getGuestLayout } from '../../store/liveStore.js'
 import VideoControls from './VideoControls.vue'
 
 const guestFileInputs = ref([])
@@ -30,6 +30,11 @@ function clearGuestMedia(idx) {
 
 function editGuestMedia(idx) {
   if (!state.guests[idx]?.media) return
+  const layout = getGuestLayout(state.guests.length)
+  if (layout[idx]) {
+    state.mediaEditorTW = layout[idx].width
+    state.mediaEditorTH = layout[idx].height
+  }
   state.mediaEditorTarget = 'guest'
   state.mediaEditorIndex = idx
   state.mediaEditorVisible = true
